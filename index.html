@@ -1,168 +1,140 @@
 <!DOCTYPE html>
-
-<html>
+<html lang="ja">
 
 <head>
 
-<meta charset="UTF-8">
+  <meta charset="UTF-8">
 
-<meta
-  name="viewport"
-  content="width=device-width, initial-scale=1">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1">
 
-<title>
-平野メディカルラリー QR受付
-</title>
+  <title>平野メディカルラリー QR受付</title>
 
-<script src="https://unpkg.com/html5-qrcode"></script>
 
-<style>
+  <script
+    src="https://unpkg.com/html5-qrcode"
+    type="text/javascript">
+  </script>
 
-* {
-  box-sizing: border-box;
-}
 
-body {
+  <style>
 
-  margin: 0;
+    * {
+      box-sizing: border-box;
+    }
 
-  padding: 15px;
+    body {
 
-  background: #f3f5f7;
+      margin: 0;
 
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    "Helvetica Neue",
-    Arial,
-    sans-serif;
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
 
-}
+      background: #111;
 
-.container {
+      color: white;
 
-  max-width: 650px;
+      text-align: center;
 
-  margin: auto;
+    }
 
-}
 
-h1 {
+    .container {
 
-  text-align: center;
+      max-width: 600px;
 
-  font-size: 25px;
+      margin: auto;
 
-}
+      padding: 20px;
 
-.card {
+    }
 
-  background: white;
 
-  border-radius: 20px;
+    h1 {
 
-  padding: 18px;
+      font-size: 24px;
 
-  box-shadow:
-    0 5px 20px rgba(0,0,0,.08);
+    }
 
-}
 
-#reader {
+    #reader {
 
-  width: 100%;
+      width: 100%;
 
-  margin-top: 15px;
+      max-width: 500px;
 
-}
+      margin: 20px auto;
 
-button {
+      border-radius: 15px;
 
-  width: 100%;
+      overflow: hidden;
 
-  padding: 18px;
+      background: #222;
 
-  border: none;
+    }
 
-  border-radius: 14px;
 
-  background: #1976d2;
+    button {
 
-  color: white;
+      width: 100%;
 
-  font-size: 20px;
+      padding: 18px;
 
-  font-weight: bold;
+      font-size: 18px;
 
-}
+      font-weight: bold;
 
-.success {
+      border: none;
 
-  margin-top: 20px;
+      border-radius: 12px;
 
-  padding: 25px;
+      background: #1976d2;
 
-  border-radius: 15px;
+      color: white;
 
-  background: #d9f7df;
+    }
 
-  color: #146c2e;
 
-  text-align: center;
+    #status {
 
-  font-size: 26px;
+      margin-top: 20px;
 
-  font-weight: bold;
+      padding: 18px;
 
-}
+      border-radius: 12px;
 
-.error {
+      background: #222;
 
-  margin-top: 20px;
+      line-height: 1.6;
 
-  padding: 25px;
+    }
 
-  border-radius: 15px;
 
-  background: #ffe0e0;
+    .success {
 
-  color: #a40000;
+      background: #1b5e20 !important;
 
-  text-align: center;
+    }
 
-  font-size: 21px;
 
-  font-weight: bold;
+    .error {
 
-}
+      background: #b71c1c !important;
 
-.info {
+    }
 
-  margin-top: 20px;
 
-  padding: 20px;
+    .warning {
 
-  border-radius: 15px;
+      background: #e65100 !important;
 
-  background: #eef5ff;
+    }
 
-  text-align: center;
-
-  font-size: 20px;
-
-}
-
-.status {
-
-  text-align: center;
-
-  margin-top: 10px;
-
-  color: #555;
-
-}
-
-</style>
+  </style>
 
 </head>
 
@@ -171,40 +143,32 @@ button {
 
 <div class="container">
 
-<h1>
-🚑 平野メディカルラリー<br>
-QR受付
-</h1>
+  <h1>
+    📷 平野メディカルラリー
+  </h1>
 
-<div class="card">
-
-<button
-  id="startButton"
-  onclick="startScanner()">
-
-📷 受付を開始する
-
-</button>
+  <p>
+    QRコード受付
+  </p>
 
 
-<div
-  id="reader">
-</div>
+  <button
+    id="startButton"
+    onclick="startScanner()">
+
+    📷 カメラを起動
+
+  </button>
 
 
-<div
-  id="status"
-  class="status">
-
-カメラを起動するには
-「受付を開始する」を押してください
-
-</div>
+  <div id="reader"></div>
 
 
-<div id="result"></div>
+  <div id="status">
 
-</div>
+    カメラを起動してください
+
+  </div>
 
 </div>
 
@@ -213,22 +177,16 @@ QR受付
 
 
 // ========================================
-// Apps Script API
-// ========================================
-
-const API_URL =
-  "https://script.google.com/macros/s/AKfycbzQIBHKrFFkoKcyrEse7EgNJZtqw8z-4goIxX_Ruzy-5mrcwe948FumJP2Im0CH5cl4DQ/exec";
-
-
-// ========================================
-// Scanner
+// 設定
 // ========================================
 
 let scanner = null;
 
-let running = false;
+let scanning = false;
 
-let processing = false;
+let lastText = "";
+
+let lastScanTime = 0;
 
 
 // ========================================
@@ -237,57 +195,80 @@ let processing = false;
 
 async function startScanner() {
 
-  if (running) {
-    return;
-  }
+  const status =
+    document.getElementById(
+      "status"
+    );
 
 
-  document.getElementById(
-    "status"
-  ).textContent =
-    "📷 カメラを起動しています...";
+  status.className = "";
 
-
-  document.getElementById(
-    "startButton"
-  ).disabled = true;
+  status.innerHTML =
+    "📷 カメラを準備しています…";
 
 
   try {
 
-    // --------------------------------
-    // まずブラウザにカメラ許可を要求
-    // --------------------------------
+    // ==================================
+    // カメラ権限を明示的に取得
+    // ==================================
 
     const stream =
       await navigator.mediaDevices
         .getUserMedia({
+
           video: {
             facingMode: {
               ideal: "environment"
             }
-          }
+          },
+
+          audio: false
+
         });
 
 
-    // 許可確認だけ行う
+    // 権限確認後、すぐ停止
+    // 実際の映像はhtml5-qrcodeが使用
 
     stream
       .getTracks()
       .forEach(
-        track => track.stop()
+        track =>
+          track.stop()
       );
 
 
-    // --------------------------------
-    // QR scanner
-    // --------------------------------
+  } catch (error) {
 
-    scanner =
-      new Html5Qrcode(
-        "reader"
-      );
+    status.className =
+      "error";
 
+
+    status.innerHTML =
+      "❌ カメラを使用できません<br><br>" +
+
+      "ブラウザのカメラ許可を確認してください。";
+
+
+    console.error(error);
+
+    return;
+
+  }
+
+
+  // ==================================
+  // QRスキャナー作成
+  // ==================================
+
+  scanner =
+    new Html5Qrcode(
+      "reader"
+    );
+
+
+  try {
 
     await scanner.start(
 
@@ -298,27 +279,12 @@ async function startScanner() {
       {
         fps: 10,
 
-        qrbox: function(
-          width,
-          height
-        ) {
-
-          const size =
-            Math.min(
-              width,
-              height
-            ) * 0.7;
-
-          return {
-            width: size,
-            height: size
-          };
-
+        qrbox: {
+          width: 250,
+          height: 250
         },
 
-        aspectRatio: 1.0,
-
-        disableFlip: false
+        aspectRatio: 1.0
 
       },
 
@@ -329,48 +295,36 @@ async function startScanner() {
     );
 
 
-    running = true;
+    scanning = true;
 
 
-    document.getElementById(
-      "status"
-    ).textContent =
-      "🟢 受付待機中 — QRコードをかざしてください";
+    document
+      .getElementById(
+        "startButton"
+      )
+      .style.display =
+      "none";
 
 
-  }
+    status.className = "";
 
-  catch(error) {
+
+    status.innerHTML =
+      "📷 QRコードをカメラに映してください<br>" +
+      "<small>連続スキャンできます</small>";
+
+
+  } catch (error) {
+
+    status.className =
+      "error";
+
+
+    status.innerHTML =
+      "❌ カメラの起動に失敗しました";
+
 
     console.error(error);
-
-
-    document.getElementById(
-      "startButton"
-    ).disabled = false;
-
-
-    document.getElementById(
-      "status"
-    ).textContent =
-      "";
-
-
-    showError(
-
-      "📷 カメラを起動できませんでした<br><br>" +
-
-      "iPhoneの場合はSafariのカメラ許可を確認してください。<br>" +
-
-      "また、このページをSafari / Chromeで直接開いてください。<br><br>" +
-
-      "<small>" +
-
-      error.message +
-
-      "</small>"
-
-    );
 
   }
 
@@ -378,20 +332,40 @@ async function startScanner() {
 
 
 // ========================================
-// QR成功
+// QR読み取り成功
 // ========================================
 
 function onScanSuccess(
-  decodedText
+  decodedText,
+  decodedResult
 ) {
 
-  if (processing) {
+  const now =
+    Date.now();
+
+
+  // 同じQRの連続読み取り防止
+
+  if (
+    decodedText === lastText &&
+    now - lastScanTime < 3000
+  ) {
+
     return;
+
   }
 
 
-  processing = true;
+  lastText =
+    decodedText;
 
+  lastScanTime =
+    now;
+
+
+  // ==================================
+  // ID抽出
+  // ==================================
 
   const ticketId =
     extractTicketId(
@@ -399,28 +373,74 @@ function onScanSuccess(
     );
 
 
-  showInfo(
-    "🔍 チケットを確認中..."
-  );
+  if (!ticketId) {
+
+    showStatus(
+      "error",
+      "❌ このQRコードは<br>" +
+      "平野メディカルラリーのチケットではありません"
+    );
+
+    return;
+
+  }
 
 
-  checkTicket(
+  // ==================================
+  // 親画面へ送信
+  // ==================================
+
+  showStatus(
+    "",
+    "🔍 チケットを確認しています…<br>" +
     ticketId
   );
+
+
+  if (
+    window.opener &&
+    !window.opener.closed
+  ) {
+
+    window.opener.postMessage(
+
+      {
+        type: "qr",
+
+        text: decodedText,
+
+        ticketId: ticketId
+
+      },
+
+      "*"
+
+    );
+
+  } else {
+
+    showStatus(
+      "error",
+
+      "❌ 受付画面との接続がありません<br><br>" +
+      "受付画面からもう一度カメラを起動してください。"
+    );
+
+  }
 
 }
 
 
 // ========================================
-// QR読み取り失敗
+// 読み取り失敗
 // ========================================
 
 function onScanFailure(
-  error
+  errorMessage
 ) {
 
-  // 読み取り途中のエラーなので
-  // 何もしない
+  // 読み取り失敗は正常
+  // 毎フレーム発生するので表示しない
 
 }
 
@@ -430,20 +450,27 @@ function onScanFailure(
 // ========================================
 
 function extractTicketId(
-  value
+  text
 ) {
 
-  value =
-    String(value).trim();
+  text =
+    String(
+      text || ""
+    ).trim();
 
 
   // HMR-0001
 
-  if (
-    value.startsWith("HMR-")
-  ) {
+  const direct =
+    text.match(
+      /HMR-\d{4}/i
+    );
 
-    return value;
+
+  if (direct) {
+
+    return direct[0]
+      .toUpperCase();
 
   }
 
@@ -453,77 +480,92 @@ function extractTicketId(
   try {
 
     const url =
-      new URL(value);
+      new URL(text);
+
 
     const id =
       url.searchParams.get(
         "id"
       );
 
+
     if (id) {
-      return id;
+
+      return id
+        .trim()
+        .toUpperCase();
+
     }
+
+  } catch (error) {
+
+    // URLではない
 
   }
 
-  catch(error) {}
 
-
-  return value;
+  return "";
 
 }
 
 
 // ========================================
-// チケット確認
+// 親画面から結果を受信
 // ========================================
 
-async function checkTicket(
-  ticketId
-) {
+window.addEventListener(
 
-  try {
+  "message",
 
-    const url =
-      API_URL +
-      "?action=info&id=" +
-      encodeURIComponent(
-        ticketId
-      );
+  function(event) {
+
+    if (!event.data) {
+      return;
+    }
 
 
-    const response =
-      await fetch(url);
-
-
-    const result =
-      await response.json();
-
-
-    if (!result.found) {
-
-      showError(
-        "❌ 無効なチケットです<br><br>" +
-        ticketId
-      );
-
-      resetScanner();
+    if (
+      event.data.type !==
+      "checkinResult"
+    ) {
 
       return;
 
     }
 
 
+    const result =
+      event.data.result;
+
+
+    if (!result) {
+      return;
+    }
+
+
+    // ==================================
+    // 入場成功
+    // ==================================
+
     if (
-      result.status ===
-      "入場済み"
+      result.success
     ) {
 
-      showError(
+      showStatus(
 
-        "⚠️ すでに入場済みです<br><br>" +
+        "success",
 
-        result.name +
+        "✅ 入場受付完了！<br><br>" +
+
+        "<strong style='font-size:28px'>" +
+
+        escapeHtml(
+          result.name
+        ) +
+
+        "</strong><br><br>" +
+
+        result.ticketId +
 
         "<br><br>" +
 
@@ -532,239 +574,176 @@ async function checkTicket(
       );
 
 
-      resetScanner();
-
-      return;
-
-    }
-
-
-    // --------------------------------
-    // 入場確定
-    // --------------------------------
-
-    await checkIn(
-      ticketId
-    );
-
-  }
-
-  catch(error) {
-
-    console.error(error);
-
-
-    showError(
-
-      "❌ 通信エラー<br><br>" +
-
-      "インターネット接続を確認してください。"
-
-    );
-
-
-    resetScanner();
-
-  }
-
-}
-
-
-// ========================================
-// 入場確定
-// ========================================
-
-async function checkIn(
-  ticketId
-) {
-
-  try {
-
-    const url =
-      API_URL +
-      "?action=checkin&id=" +
-      encodeURIComponent(
-        ticketId
-      );
-
-
-    const response =
-      await fetch(url);
-
-
-    const result =
-      await response.json();
-
-
-    if (
-      result.success
-    ) {
-
-      showSuccess(
-        result.name,
-        result.ticketId
-      );
-
-
-      // 振動
+      // バイブレーション
 
       if (
         navigator.vibrate
       ) {
 
         navigator.vibrate(
-          [100, 50, 100]
+          [200, 100, 200]
         );
 
       }
 
 
+      return;
+
     }
 
-    else if (
+
+    // ==================================
+    // 二重入場
+    // ==================================
+
+    if (
       result.alreadyCheckedIn
     ) {
 
-      showError(
+      showStatus(
+
+        "warning",
 
         "⚠️ すでに入場済みです<br><br>" +
 
-        result.name +
+        "<strong style='font-size:28px'>" +
 
-        "<br>" +
+        escapeHtml(
+          result.name
+        ) +
+
+        "</strong><br><br>" +
+
+        "入場日時：" +
 
         result.entryTime
 
       );
 
+
+      if (
+        navigator.vibrate
+      ) {
+
+        navigator.vibrate(
+          [500]
+        );
+
+      }
+
+
+      return;
+
     }
 
-    else {
 
-      showError(
-        "❌ 入場処理に失敗しました"
+    // ==================================
+    // 未登録
+    // ==================================
+
+    if (
+      result.notFound
+    ) {
+
+      showStatus(
+
+        "error",
+
+        "❌ このチケットは登録されていません"
+
       );
 
+
+      if (
+        navigator.vibrate
+      ) {
+
+        navigator.vibrate(
+          [500]
+        );
+
+      }
+
+
+      return;
+
     }
 
 
-    resetScanner();
+    showStatus(
+
+      "error",
+
+      "❌ 入場処理に失敗しました"
+
+    );
 
   }
 
-  catch(error) {
-
-    console.error(error);
+);
 
 
-    showError(
-      "❌ 入場処理中にエラーが発生しました"
+// ========================================
+// ステータス表示
+// ========================================
+
+function showStatus(
+  className,
+  html
+) {
+
+  const status =
+    document.getElementById(
+      "status"
     );
 
 
-    resetScanner();
-
-  }
-
-}
+  status.className =
+    className;
 
 
-// ========================================
-// 自動リセット
-// ========================================
-
-function resetScanner() {
-
-  setTimeout(
-
-    function() {
-
-      document.getElementById(
-        "result"
-      ).innerHTML = "";
-
-
-      processing = false;
-
-
-      document.getElementById(
-        "status"
-      ).textContent =
-        "🟢 受付待機中 — 次のQRコードをどうぞ";
-
-    },
-
-    1800
-
-  );
+  status.innerHTML =
+    html;
 
 }
 
 
 // ========================================
-// 表示
+// HTMLエスケープ
 // ========================================
 
-function showSuccess(
-  name,
-  ticketId
+function escapeHtml(
+  text
 ) {
 
-  document.getElementById(
-    "result"
-  ).innerHTML =
+  return String(
+    text || ""
+  )
 
-    '<div class="success">' +
+    .replace(
+      /&/g,
+      "&amp;"
+    )
 
-      '🟢 入場OK！<br><br>' +
+    .replace(
+      /</g,
+      "&lt;"
+    )
 
-      '<span style="font-size:20px">' +
+    .replace(
+      />/g,
+      "&gt;"
+    )
 
-      name +
+    .replace(
+      /"/g,
+      "&quot;"
+    )
 
-      '</span><br>' +
-
-      '<span style="font-size:16px">' +
-
-      ticketId +
-
-      '</span>' +
-
-    '</div>';
-
-}
-
-
-function showError(
-  message
-) {
-
-  document.getElementById(
-    "result"
-  ).innerHTML =
-
-    '<div class="error">' +
-
-      message +
-
-    '</div>';
-
-}
-
-
-function showInfo(
-  message
-) {
-
-  document.getElementById(
-    "result"
-  ).innerHTML =
-
-    '<div class="info">' +
-
-      message +
-
-    '</div>';
+    .replace(
+      /'/g,
+      "&#039;"
+    );
 
 }
 
