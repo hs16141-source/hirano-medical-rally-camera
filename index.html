@@ -7,42 +7,45 @@
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+  >
 
   <meta
     name="theme-color"
-    content="#111111">
+    content="#111111"
+  >
 
   <title>平野メディカルラリー QR受付</title>
 
 
-  <!-- ========================================
+  <!-- ==================================================
        QRコード読み取りライブラリ
-       ======================================== -->
+       ================================================== -->
 
   <script
-    src="https://unpkg.com/html5-qrcode"
-    type="text/javascript">
-  </script>
+    src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"
+  ></script>
 
 
   <style>
 
     * {
       box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
     }
 
 
     html,
     body {
+
       margin: 0;
       padding: 0;
+
       width: 100%;
       min-height: 100%;
-    }
 
-
-    body {
+      background: #111;
+      color: white;
 
       font-family:
         -apple-system,
@@ -50,25 +53,21 @@
         "Segoe UI",
         sans-serif;
 
-      background: #111;
-
-      color: white;
-
-      text-align: center;
-
       -webkit-font-smoothing: antialiased;
-
     }
 
 
-    /* ========================================
-       メイン
-       ======================================== */
+    body {
+
+      text-align: center;
+
+      padding-bottom: 40px;
+    }
+
 
     .container {
 
       width: 100%;
-
       max-width: 600px;
 
       margin: 0 auto;
@@ -77,7 +76,6 @@
         20px
         16px
         40px;
-
     }
 
 
@@ -87,9 +85,7 @@
         10px 0 5px;
 
       font-size: 24px;
-
       line-height: 1.4;
-
     }
 
 
@@ -101,13 +97,12 @@
       color: #bbb;
 
       font-size: 15px;
-
     }
 
 
-    /* ========================================
+    /* ==================================================
        起動ボタン
-       ======================================== */
+       ================================================== */
 
     #startButton {
 
@@ -118,28 +113,21 @@
       padding: 15px;
 
       font-size: 19px;
-
       font-weight: bold;
 
       border: none;
-
       border-radius: 14px;
 
       background: #1976d2;
-
       color: white;
 
       cursor: pointer;
-
-      -webkit-tap-highlight-color: transparent;
-
     }
 
 
     #startButton:active {
 
       transform: scale(0.98);
-
     }
 
 
@@ -148,18 +136,16 @@
       opacity: 0.6;
 
       cursor: default;
-
     }
 
 
-    /* ========================================
+    /* ==================================================
        カメラ
-       ======================================== */
+       ================================================== */
 
     #reader {
 
       width: 100%;
-
       max-width: 500px;
 
       margin:
@@ -170,11 +156,16 @@
       overflow: hidden;
 
       background: #222;
-
     }
 
 
-    /* html5-qrcodeのボタン等 */
+    #reader video {
+
+      width: 100% !important;
+
+      border-radius: 16px;
+    }
+
 
     #reader button {
 
@@ -195,19 +186,20 @@
       color: white;
 
       font-size: 15px;
-
     }
 
 
-    /* ========================================
+    /* ==================================================
        ステータス
-       ======================================== */
+       ================================================== */
 
     #status {
 
       margin-top: 18px;
 
-      padding: 20px 15px;
+      padding:
+        20px
+        15px;
 
       border-radius: 14px;
 
@@ -226,35 +218,30 @@
       flex-direction: column;
 
       word-break: break-word;
-
     }
 
 
     #status.success {
 
       background: #1b5e20;
-
     }
 
 
     #status.error {
 
       background: #b71c1c;
-
     }
 
 
     #status.warning {
 
       background: #e65100;
-
     }
 
 
     #status.info {
 
       background: #1565c0;
-
     }
 
 
@@ -265,7 +252,6 @@
       font-weight: bold;
 
       margin-bottom: 8px;
-
     }
 
 
@@ -276,7 +262,6 @@
       font-weight: bold;
 
       letter-spacing: 1px;
-
     }
 
 
@@ -286,8 +271,8 @@
 
       font-weight: bold;
 
-      margin: 8px 0;
-
+      margin:
+        8px 0;
     }
 
 
@@ -295,14 +280,57 @@
 
       font-size: 13px;
 
-      opacity: 0.85;
+      opacity: 0.9;
 
+      line-height: 1.6;
     }
 
 
-    /* ========================================
+    /* ==================================================
+       エラー詳細
+       ================================================== */
+
+    #debug {
+
+      display: none;
+
+      margin-top: 15px;
+
+      padding: 15px;
+
+      border-radius: 12px;
+
+      background: #222;
+
+      text-align: left;
+
+      font-size: 12px;
+
+      line-height: 1.6;
+
+      word-break: break-all;
+    }
+
+
+    #debug.visible {
+
+      display: block;
+    }
+
+
+    #debugTitle {
+
+      font-weight: bold;
+
+      font-size: 14px;
+
+      margin-bottom: 8px;
+    }
+
+
+    /* ==================================================
        補足
-       ======================================== */
+       ================================================== */
 
     .notice {
 
@@ -313,9 +341,21 @@
       font-size: 12px;
 
       line-height: 1.6;
-
     }
 
+
+    /* ==================================================
+       接続状態
+       ================================================== */
+
+    #connection {
+
+      margin-top: 10px;
+
+      font-size: 12px;
+
+      color: #888;
+    }
 
   </style>
 
@@ -338,30 +378,31 @@
   </p>
 
 
-  <!-- ========================================
+  <!-- ==================================================
        カメラ起動
-       ======================================== -->
+       ================================================== -->
 
   <button
     id="startButton"
     type="button"
-    onclick="startScanner()">
+    onclick="startScanner()"
+  >
 
     📷 カメラを起動
 
   </button>
 
 
-  <!-- ========================================
+  <!-- ==================================================
        QR読み取りエリア
-       ======================================== -->
+       ================================================== -->
 
   <div id="reader"></div>
 
 
-  <!-- ========================================
+  <!-- ==================================================
        状態表示
-       ======================================== -->
+       ================================================== -->
 
   <div id="status">
 
@@ -370,9 +411,30 @@
   </div>
 
 
+  <!-- ==================================================
+       デバッグ情報
+       ================================================== -->
+
+  <div id="debug">
+
+    <div id="debugTitle">
+      🔧 エラー詳細
+    </div>
+
+    <div id="debugContent"></div>
+
+  </div>
+
+
+  <div id="connection">
+    受付画面との接続を確認しています…
+  </div>
+
+
   <p class="notice">
 
-    QRコードを読み取ると、自動的に受付処理を行います。
+    QRコードを読み取ると、
+    自動的に受付処理を行います。
 
   </p>
 
@@ -383,9 +445,10 @@
 <script>
 
 
-// ==================================================
-// 設定
-// ==================================================
+/* ==================================================
+   設定
+   ================================================== */
+
 
 let scanner = null;
 
@@ -398,534 +461,132 @@ let lastText = "";
 let lastScanTime = 0;
 
 
-// 同じQRを再読み取りするまでの時間
+/*
+ * 同じQRコードを再読み取りするまでの時間
+ *
+ * 3000 = 3秒
+ */
 
 const DUPLICATE_WAIT = 3000;
 
 
-// ==================================================
-// DOM
-// ==================================================
+/* ==================================================
+   DOM
+   ================================================== */
+
 
 const startButton =
-  document.getElementById(
-    "startButton"
-  );
+  document.getElementById("startButton");
 
 
 const status =
-  document.getElementById(
-    "status"
+  document.getElementById("status");
+
+
+const debug =
+  document.getElementById("debug");
+
+
+const debugContent =
+  document.getElementById("debugContent");
+
+
+const connection =
+  document.getElementById("connection");
+
+
+/* ==================================================
+   初期状態確認
+   ================================================== */
+
+function showInitialDiagnostics() {
+
+  const diagnostics = {
+
+    URL:
+      location.href,
+
+    HTTPS:
+      location.protocol === "https:" ? "OK" : "NG",
+
+    SecureContext:
+      window.isSecureContext ? "OK" : "NG",
+
+    mediaDevices:
+      navigator.mediaDevices
+        ? "OK"
+        : "NG",
+
+    getUserMedia:
+      navigator.mediaDevices &&
+      navigator.mediaDevices.getUserMedia
+        ? "OK"
+        : "NG",
+
+    Html5Qrcode:
+      typeof Html5Qrcode !== "undefined"
+        ? "OK"
+        : "NG"
+
+  };
+
+
+  console.log(
+    "Camera diagnostics:",
+    diagnostics
   );
-
-
-// ==================================================
-// 受付画面の送信先
-// ==================================================
-//
-// カメラページが受付画面から開かれた場合、
-// document.referrerから受付画面のoriginを取得する。
-// ==================================================
-
-function getParentOrigin() {
-
-  try {
-
-    if (
-      document.referrer
-    ) {
-
-      return new URL(
-        document.referrer
-      ).origin;
-
-    }
-
-  } catch (error) {
-
-    console.warn(
-      "親ページのoriginを取得できません",
-      error
-    );
-
-  }
-
-
-  return "*";
 
 }
 
 
-// ==================================================
-// カメラ開始
-// ==================================================
+showInitialDiagnostics();
 
-<!DOCTYPE html>
-<html lang="ja">
 
-<head>
+/* ==================================================
+   受付画面との接続確認
+   ================================================== */
 
-  <meta charset="UTF-8">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+function checkParentConnection() {
 
-  <meta
-    name="theme-color"
-    content="#111111">
+  if (
+    window.opener &&
+    !window.opener.closed
+  ) {
 
-  <title>平野メディカルラリー QR受付</title>
+    connection.textContent =
+      "🟢 受付画面と接続されています";
 
+    connection.style.color =
+      "#81c784";
 
-  <!-- ========================================
-       QRコード読み取りライブラリ
-       ======================================== -->
+  } else {
 
-  <script
-    src="https://unpkg.com/html5-qrcode"
-    type="text/javascript">
-  </script>
+    connection.textContent =
+      "🟡 受付画面から起動すると自動受付できます";
 
-
-  <style>
-
-    * {
-      box-sizing: border-box;
-    }
-
-
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      min-height: 100%;
-    }
-
-
-    body {
-
-      font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-
-      background: #111;
-
-      color: white;
-
-      text-align: center;
-
-      -webkit-font-smoothing: antialiased;
-
-    }
-
-
-    /* ========================================
-       メイン
-       ======================================== */
-
-    .container {
-
-      width: 100%;
-
-      max-width: 600px;
-
-      margin: 0 auto;
-
-      padding:
-        20px
-        16px
-        40px;
-
-    }
-
-
-    h1 {
-
-      margin:
-        10px 0 5px;
-
-      font-size: 24px;
-
-      line-height: 1.4;
-
-    }
-
-
-    .subtitle {
-
-      margin:
-        0 0 20px;
-
-      color: #bbb;
-
-      font-size: 15px;
-
-    }
-
-
-    /* ========================================
-       起動ボタン
-       ======================================== */
-
-    #startButton {
-
-      width: 100%;
-
-      min-height: 58px;
-
-      padding: 15px;
-
-      font-size: 19px;
-
-      font-weight: bold;
-
-      border: none;
-
-      border-radius: 14px;
-
-      background: #1976d2;
-
-      color: white;
-
-      cursor: pointer;
-
-      -webkit-tap-highlight-color: transparent;
-
-    }
-
-
-    #startButton:active {
-
-      transform: scale(0.98);
-
-    }
-
-
-    #startButton:disabled {
-
-      opacity: 0.6;
-
-      cursor: default;
-
-    }
-
-
-    /* ========================================
-       カメラ
-       ======================================== */
-
-    #reader {
-
-      width: 100%;
-
-      max-width: 500px;
-
-      margin:
-        20px auto;
-
-      border-radius: 16px;
-
-      overflow: hidden;
-
-      background: #222;
-
-    }
-
-
-    /* html5-qrcodeのボタン等 */
-
-    #reader button {
-
-      min-height: 44px;
-
-      padding:
-        10px
-        16px;
-
-      margin: 5px;
-
-      border: none;
-
-      border-radius: 10px;
-
-      background: #1976d2;
-
-      color: white;
-
-      font-size: 15px;
-
-    }
-
-
-    /* ========================================
-       ステータス
-       ======================================== */
-
-    #status {
-
-      margin-top: 18px;
-
-      padding: 20px 15px;
-
-      border-radius: 14px;
-
-      background: #222;
-
-      line-height: 1.7;
-
-      min-height: 90px;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      flex-direction: column;
-
-      word-break: break-word;
-
-    }
-
-
-    #status.success {
-
-      background: #1b5e20;
-
-    }
-
-
-    #status.error {
-
-      background: #b71c1c;
-
-    }
-
-
-    #status.warning {
-
-      background: #e65100;
-
-    }
-
-
-    #status.info {
-
-      background: #1565c0;
-
-    }
-
-
-    .status-title {
-
-      font-size: 27px;
-
-      font-weight: bold;
-
-      margin-bottom: 8px;
-
-    }
-
-
-    .ticket-id {
-
-      font-size: 22px;
-
-      font-weight: bold;
-
-      letter-spacing: 1px;
-
-    }
-
-
-    .person-name {
-
-      font-size: 29px;
-
-      font-weight: bold;
-
-      margin: 8px 0;
-
-    }
-
-
-    .small {
-
-      font-size: 13px;
-
-      opacity: 0.85;
-
-    }
-
-
-    /* ========================================
-       補足
-       ======================================== */
-
-    .notice {
-
-      margin-top: 18px;
-
-      color: #999;
-
-      font-size: 12px;
-
-      line-height: 1.6;
-
-    }
-
-
-  </style>
-
-</head>
-
-
-<body>
-
-
-<div class="container">
-
-
-  <h1>
-    📷 平野メディカルラリー
-  </h1>
-
-
-  <p class="subtitle">
-    QRコード受付
-  </p>
-
-
-  <!-- ========================================
-       カメラ起動
-       ======================================== -->
-
-  <button
-    id="startButton"
-    type="button"
-    onclick="startScanner()">
-
-    📷 カメラを起動
-
-  </button>
-
-
-  <!-- ========================================
-       QR読み取りエリア
-       ======================================== -->
-
-  <div id="reader"></div>
-
-
-  <!-- ========================================
-       状態表示
-       ======================================== -->
-
-  <div id="status">
-
-    カメラを起動してください
-
-  </div>
-
-
-  <p class="notice">
-
-    QRコードを読み取ると、自動的に受付処理を行います。
-
-  </p>
-
-
-</div>
-
-
-<script>
-
-
-// ==================================================
-// 設定
-// ==================================================
-
-let scanner = null;
-
-let scanning = false;
-
-let processing = false;
-
-let lastText = "";
-
-let lastScanTime = 0;
-
-
-// 同じQRを再読み取りするまでの時間
-
-const DUPLICATE_WAIT = 3000;
-
-
-// ==================================================
-// DOM
-// ==================================================
-
-const startButton =
-  document.getElementById(
-    "startButton"
-  );
-
-
-const status =
-  document.getElementById(
-    "status"
-  );
-
-
-// ==================================================
-// 受付画面の送信先
-// ==================================================
-//
-// カメラページが受付画面から開かれた場合、
-// document.referrerから受付画面のoriginを取得する。
-// ==================================================
-
-function getParentOrigin() {
-
-  try {
-
-    if (
-      document.referrer
-    ) {
-
-      return new URL(
-        document.referrer
-      ).origin;
-
-    }
-
-  } catch (error) {
-
-    console.warn(
-      "親ページのoriginを取得できません",
-      error
-    );
+    connection.style.color =
+      "#ffb74d";
 
   }
-
-
-  return "*";
 
 }
 
 
-// ==================================================
-// カメラ開始
-// ==================================================
+checkParentConnection();
+
+
+/* ==================================================
+   カメラ開始
+   ================================================== */
+
 
 async function startScanner() {
 
 
-  // すでに起動中なら何もしない
+  /*
+   * すでに起動中なら何もしない
+   */
 
   if (scanning) {
 
@@ -934,15 +595,27 @@ async function startScanner() {
   }
 
 
-  // 処理中解除
+  /*
+   * 処理状態リセット
+   */
 
   processing = false;
 
+  lastText = "";
 
-  // ボタン無効化
+  lastScanTime = 0;
+
+
+  /*
+   * ボタン無効化
+   */
 
   startButton.disabled = true;
 
+
+  /*
+   * ステータス
+   */
 
   showStatus(
     "info",
@@ -950,12 +623,80 @@ async function startScanner() {
   );
 
 
+  /*
+   * デバッグ非表示
+   */
+
+  debug.classList.remove("visible");
+
+
   try {
 
 
-    // ----------------------------------------------
-    // 既存scannerがあれば破棄
-    // ----------------------------------------------
+    /* ==================================================
+       事前チェック
+       ================================================== */
+
+
+    if (
+      location.protocol !== "https:"
+    ) {
+
+      throw new Error(
+        "HTTPSではありません。GitHub PagesのURLを使用してください。"
+      );
+
+    }
+
+
+    if (
+      !window.isSecureContext
+    ) {
+
+      throw new Error(
+        "Secure Contextではありません。HTTPSでアクセスしてください。"
+      );
+
+    }
+
+
+    if (
+      !navigator.mediaDevices
+    ) {
+
+      throw new Error(
+        "navigator.mediaDevices が利用できません。iPhone Safariのカメラ機能を利用できない状態です。"
+      );
+
+    }
+
+
+    if (
+      !navigator.mediaDevices.getUserMedia
+    ) {
+
+      throw new Error(
+        "getUserMedia が利用できません。ブラウザのカメラ機能に対応していません。"
+      );
+
+    }
+
+
+    if (
+      typeof Html5Qrcode === "undefined"
+    ) {
+
+      throw new Error(
+        "Html5Qrcodeの読み込みに失敗しました。インターネット接続を確認してください。"
+      );
+
+    }
+
+
+    /* ==================================================
+       既存scannerを停止
+       ================================================== */
+
 
     if (scanner) {
 
@@ -972,14 +713,30 @@ async function startScanner() {
 
       }
 
+
+      try {
+
+        scanner.clear();
+
+      } catch (error) {
+
+        console.warn(
+          "既存scanner clear:",
+          error
+        );
+
+      }
+
+
       scanner = null;
 
     }
 
 
-    // ----------------------------------------------
-    // scanner作成
-    // ----------------------------------------------
+    /* ==================================================
+       scanner作成
+       ================================================== */
+
 
     scanner =
       new Html5Qrcode(
@@ -987,9 +744,10 @@ async function startScanner() {
       );
 
 
-    // ----------------------------------------------
-    // カメラ開始
-    // ----------------------------------------------
+    /* ==================================================
+       カメラ開始
+       ================================================== */
+
 
     await scanner.start(
 
@@ -1003,24 +761,28 @@ async function startScanner() {
 
         fps: 10,
 
-        qrbox: function(
-          viewfinderWidth,
-          viewfinderHeight
-        ) {
+        qrbox:
+          function(
+            viewfinderWidth,
+            viewfinderHeight
+          ) {
 
-          const size =
-            Math.min(
-              viewfinderWidth,
-              viewfinderHeight,
-              280
-            );
+            const size =
+              Math.min(
+                viewfinderWidth,
+                viewfinderHeight,
+                280
+              );
 
-          return {
-            width: size,
-            height: size
-          };
+            return {
 
-        },
+              width: size,
+
+              height: size
+
+            };
+
+          },
 
         aspectRatio: 1.0
 
@@ -1033,9 +795,10 @@ async function startScanner() {
     );
 
 
-    // ----------------------------------------------
-    // 起動成功
-    // ----------------------------------------------
+    /* ==================================================
+       起動成功
+       ================================================== */
+
 
     scanning = true;
 
@@ -1044,9 +807,17 @@ async function startScanner() {
 
 
     showStatus(
-      "",
-      "📷 QRコードをカメラに映してください<br>" +
-      "<span class='small'>読み取ると自動的に受付処理します</span>"
+
+      "info",
+
+      "<div class='status-title'>" +
+      "📷 スキャン準備完了" +
+      "</div>" +
+
+      "<span class='small'>" +
+      "QRコードをカメラに映してください" +
+      "</span>"
+
     );
 
 
@@ -1070,52 +841,186 @@ async function startScanner() {
       "block";
 
 
-    let message =
+    let errorName = "";
+
+    let errorMessage = "";
+
+    let errorString = "";
+
+
+    if (error) {
+
+      errorName =
+        error.name || "";
+
+      errorMessage =
+        error.message || "";
+
+      errorString =
+        String(error);
+
+    }
+
+
+    /* ==================================================
+       エラー判定
+       ================================================== */
+
+
+    let userMessage =
       "❌ カメラを起動できませんでした";
 
 
-    // ----------------------------------------------
-    // エラー内容をわかりやすくする
-    // ----------------------------------------------
-
     if (
-      error &&
-      (
-        String(error).includes(
-          "NotAllowedError"
-        ) ||
-        String(error).includes(
-          "Permission"
-        )
-      )
+      errorName ===
+      "NotAllowedError"
     ) {
 
-      message =
-        "❌ カメラの使用が許可されていません<br><br>" +
-        "<span class='small'>" +
-        "ブラウザのカメラ許可を確認してください。" +
-        "</span>";
+      userMessage =
+        "❌ カメラの使用が許可されていません";
+
+    }
+
+
+    else if (
+      errorName ===
+      "NotFoundError"
+    ) {
+
+      userMessage =
+        "❌ カメラが見つかりません";
+
+    }
+
+
+    else if (
+      errorName ===
+      "NotReadableError"
+    ) {
+
+      userMessage =
+        "❌ カメラを使用できません";
+
+    }
+
+
+    else if (
+      errorName ===
+      "OverconstrainedError"
+    ) {
+
+      userMessage =
+        "❌ 使用できるカメラを選択できませんでした";
+
+    }
+
+
+    else if (
+      errorName ===
+      "SecurityError"
+    ) {
+
+      userMessage =
+        "❌ ブラウザのセキュリティ設定によりカメラを使用できません";
 
     }
 
 
     showStatus(
+
       "error",
-      message
+
+      "<div class='status-title'>" +
+      userMessage +
+      "</div>" +
+
+      "<span class='small'>" +
+
+      (
+        errorName
+          ? "エラー：" +
+            escapeHtml(errorName)
+          : ""
+      ) +
+
+      "</span>"
+
     );
+
+
+    /* ==================================================
+       デバッグ情報表示
+       ================================================== */
+
+
+    const diagnostics = [
+
+      "URL: " +
+        location.href,
+
+      "Protocol: " +
+        location.protocol,
+
+      "SecureContext: " +
+        window.isSecureContext,
+
+      "mediaDevices: " +
+        !!navigator.mediaDevices,
+
+      "getUserMedia: " +
+        !!(
+          navigator.mediaDevices &&
+          navigator.mediaDevices.getUserMedia
+        ),
+
+      "Html5Qrcode: " +
+        (
+          typeof Html5Qrcode !==
+          "undefined"
+        ),
+
+      "error.name: " +
+        errorName,
+
+      "error.message: " +
+        errorMessage,
+
+      "error.toString(): " +
+        errorString
+
+    ];
+
+
+    debugContent.innerHTML =
+      diagnostics
+        .map(
+          function(item) {
+
+            return escapeHtml(item);
+
+          }
+        )
+        .join("<br>");
+
+
+    debug.classList.add("visible");
 
   }
 
 }
 
 
-// ==================================================
-// QR読み取り成功
-// ==================================================
+/* ==================================================
+   QR読み取り成功
+   ================================================== */
+
 
 function onScanSuccess(
+
   decodedText,
+
   decodedResult
+
 ) {
 
 
@@ -1123,9 +1028,9 @@ function onScanSuccess(
     Date.now();
 
 
-  // ----------------------------------------------
-  // 処理中なら無視
-  // ----------------------------------------------
+  /*
+   * 処理中なら無視
+   */
 
   if (processing) {
 
@@ -1134,9 +1039,9 @@ function onScanSuccess(
   }
 
 
-  // ----------------------------------------------
-  // 同じQRの連続読み取り防止
-  // ----------------------------------------------
+  /*
+   * 同じQRの連続読み取り防止
+   */
 
   if (
 
@@ -1160,9 +1065,9 @@ function onScanSuccess(
     now;
 
 
-  // ----------------------------------------------
-  // チケットID取得
-  // ----------------------------------------------
+  /*
+   * チケットID取得
+   */
 
   const ticketId =
     extractTicketId(
@@ -1170,9 +1075,9 @@ function onScanSuccess(
     );
 
 
-  // ----------------------------------------------
-  // 不正なQR
-  // ----------------------------------------------
+  /*
+   * 不正なQR
+   */
 
   if (!ticketId) {
 
@@ -1196,9 +1101,9 @@ function onScanSuccess(
   }
 
 
-  // ----------------------------------------------
-  // 処理開始
-  // ----------------------------------------------
+  /*
+   * 処理開始
+   */
 
   processing = true;
 
@@ -1218,9 +1123,9 @@ function onScanSuccess(
   );
 
 
-  // ----------------------------------------------
-  // 親画面へ送信
-  // ----------------------------------------------
+  /*
+   * 親の受付画面へ送信
+   */
 
   sendToParent({
 
@@ -1232,27 +1137,29 @@ function onScanSuccess(
 
   });
 
-
 }
 
 
-// ==================================================
-// 親画面へ送信
-// ==================================================
+/* ==================================================
+   親画面へ送信
+   ================================================== */
+
 
 function sendToParent(
   data
 ) {
 
 
+  /*
+   * 受付画面が存在しない場合
+   *
+   * ここではカメラ自体は止めない。
+   */
+
   if (
-
     !window.opener ||
-
     window.opener.closed
-
   ) {
-
 
     processing = false;
 
@@ -1280,15 +1187,18 @@ function sendToParent(
   try {
 
 
-    const targetOrigin =
-      getParentOrigin();
-
+    /*
+     * iPhone Safariを含め、
+     * targetOriginは "*" にする。
+     *
+     * 受付側で受け取ったQRを処理する。
+     */
 
     window.opener.postMessage(
 
       data,
 
-      targetOrigin
+      "*"
 
     );
 
@@ -1309,7 +1219,9 @@ function sendToParent(
 
       "error",
 
-      "❌ 受付画面への送信に失敗しました"
+      "<div class='status-title'>" +
+      "❌ 受付画面への送信に失敗しました" +
+      "</div>"
 
     );
 
@@ -1318,24 +1230,29 @@ function sendToParent(
 }
 
 
-// ==================================================
-// QR読み取り失敗
-// ==================================================
+/* ==================================================
+   QR読み取り失敗
+   ================================================== */
+
 
 function onScanFailure(
   errorMessage
 ) {
 
-  // QRが映っていないときにも
-  // この関数は頻繁に呼ばれるため、
-  // 画面には表示しない。
+  /*
+   * QRが映っていない場合にも
+   * この関数は頻繁に呼ばれる。
+   *
+   * 画面には表示しない。
+   */
 
 }
 
 
-// ==================================================
-// チケットID抽出
-// ==================================================
+/* ==================================================
+   チケットID抽出
+   ================================================== */
+
 
 function extractTicketId(
   text
@@ -1348,9 +1265,9 @@ function extractTicketId(
     ).trim();
 
 
-  // ----------------------------------------------
-  // HMR-0001形式
-  // ----------------------------------------------
+  /*
+   * HMR-0001形式
+   */
 
   const direct =
     text.match(
@@ -1366,9 +1283,11 @@ function extractTicketId(
   }
 
 
-  // ----------------------------------------------
-  // URL形式
-  // ----------------------------------------------
+  /*
+   * URL形式
+   *
+   * https://xxxxx...?id=HMR-0001
+   */
 
   try {
 
@@ -1385,8 +1304,10 @@ function extractTicketId(
 
     if (id) {
 
+
       const normalized =
-        id.trim().toUpperCase();
+        id.trim()
+          .toUpperCase();
 
 
       if (
@@ -1404,7 +1325,9 @@ function extractTicketId(
 
   } catch (error) {
 
-    // URLではない
+    /*
+     * URLではない
+     */
 
   }
 
@@ -1414,9 +1337,10 @@ function extractTicketId(
 }
 
 
-// ==================================================
-// 親画面から受付結果を受信
-// ==================================================
+/* ==================================================
+   親画面から受付結果を受信
+   ================================================== */
+
 
 window.addEventListener(
 
@@ -1425,56 +1349,25 @@ window.addEventListener(
   function(event) {
 
 
-    // ----------------------------------------------
-    // データ確認
-    // ----------------------------------------------
+    /*
+     * データ確認
+     */
 
-    if (
-      !event.data
-    ) {
+    if (!event.data) {
 
       return;
 
     }
 
 
-    // ----------------------------------------------
-    // メッセージ種類確認
-    // ----------------------------------------------
+    /*
+     * メッセージ種類確認
+     */
 
     if (
-
       event.data.type !==
       "checkinResult"
-
     ) {
-
-      return;
-
-    }
-
-
-    // ----------------------------------------------
-    // 親origin確認
-    // ----------------------------------------------
-
-    const expectedOrigin =
-      getParentOrigin();
-
-
-    if (
-
-      expectedOrigin !== "*" &&
-
-      event.origin !==
-        expectedOrigin
-
-    ) {
-
-      console.warn(
-        "不正なoriginからのmessage:",
-        event.origin
-      );
 
       return;
 
@@ -1494,9 +1387,9 @@ window.addEventListener(
     }
 
 
-    // ----------------------------------------------
-    // 入場成功
-    // ----------------------------------------------
+    /* ==================================================
+       入場成功
+       ================================================== */
 
     if (
       result.success
@@ -1532,14 +1425,12 @@ window.addEventListener(
       );
 
 
-      // バイブレーション
-
       vibrateSuccess();
 
 
-      // --------------------------------------------
-      // 次のQRを読めるようにする
-      // --------------------------------------------
+      /*
+       * 約2秒後に次のQRへ
+       */
 
       setTimeout(
 
@@ -1547,10 +1438,9 @@ window.addEventListener(
 
           processing = false;
 
-
           showStatus(
 
-            "",
+            "info",
 
             "📷 次のQRコードを読み取ってください"
 
@@ -1568,9 +1458,9 @@ window.addEventListener(
     }
 
 
-    // ----------------------------------------------
-    // 二重入場
-    // ----------------------------------------------
+    /* ==================================================
+       二重入場
+       ================================================== */
 
     if (
       result.alreadyCheckedIn
@@ -1610,10 +1500,9 @@ window.addEventListener(
 
           processing = false;
 
-
           showStatus(
 
-            "",
+            "info",
 
             "📷 次のQRコードを読み取ってください"
 
@@ -1631,9 +1520,9 @@ window.addEventListener(
     }
 
 
-    // ----------------------------------------------
-    // チケット未登録
-    // ----------------------------------------------
+    /* ==================================================
+       チケット未登録
+       ================================================== */
 
     if (
       result.notFound
@@ -1664,10 +1553,9 @@ window.addEventListener(
 
           processing = false;
 
-
           showStatus(
 
-            "",
+            "info",
 
             "📷 次のQRコードを読み取ってください"
 
@@ -1685,9 +1573,9 @@ window.addEventListener(
     }
 
 
-    // ----------------------------------------------
-    // その他のエラー
-    // ----------------------------------------------
+    /* ==================================================
+       その他のエラー
+       ================================================== */
 
     showStatus(
 
@@ -1713,10 +1601,9 @@ window.addEventListener(
 
         processing = false;
 
-
         showStatus(
 
-          "",
+          "info",
 
           "📷 次のQRコードを読み取ってください"
 
@@ -1733,12 +1620,12 @@ window.addEventListener(
 );
 
 
-// ==================================================
-// 成功バイブレーション
-// ==================================================
+/* ==================================================
+   成功バイブレーション
+   ================================================== */
+
 
 function vibrateSuccess() {
-
 
   if (
     navigator.vibrate
@@ -1753,12 +1640,12 @@ function vibrateSuccess() {
 }
 
 
-// ==================================================
-// エラーバイブレーション
-// ==================================================
+/* ==================================================
+   エラーバイブレーション
+   ================================================== */
+
 
 function vibrateError() {
-
 
   if (
     navigator.vibrate
@@ -1773,9 +1660,10 @@ function vibrateError() {
 }
 
 
-// ==================================================
-// ステータス表示
-// ==================================================
+/* ==================================================
+   ステータス表示
+   ================================================== */
+
 
 function showStatus(
   className,
@@ -1793,9 +1681,10 @@ function showStatus(
 }
 
 
-// ==================================================
-// HTMLエスケープ
-// ==================================================
+/* ==================================================
+   HTMLエスケープ
+   ================================================== */
+
 
 function escapeHtml(
   text
@@ -1834,9 +1723,10 @@ function escapeHtml(
 }
 
 
-// ==================================================
-// ページを離れるときカメラ停止
-// ==================================================
+/* ==================================================
+   ページを離れるときカメラ停止
+   ================================================== */
+
 
 window.addEventListener(
 
@@ -1868,951 +1758,6 @@ window.addEventListener(
   }
 
 );
-
-
-</script>
-
-
-</body>
-
-</html>
-
-
-  // 処理中解除
-
-  processing = false;
-
-
-  // ボタン無効化
-
-  startButton.disabled = true;
-
-
-  showStatus(
-    "info",
-    "📷 カメラを準備しています…"
-  );
-
-
-  try {
-
-
-    // ----------------------------------------------
-    // 既存scannerがあれば破棄
-    // ----------------------------------------------
-
-    if (scanner) {
-
-      try {
-
-        await scanner.stop();
-
-      } catch (error) {
-
-        console.warn(
-          "既存scanner停止:",
-          error
-        );
-
-      }
-
-      scanner = null;
-
-    }
-
-
-    // ----------------------------------------------
-    // scanner作成
-    // ----------------------------------------------
-
-    scanner =
-      new Html5Qrcode(
-        "reader"
-      );
-
-
-    // ----------------------------------------------
-    // カメラ開始
-    // ----------------------------------------------
-
-    await scanner.start(
-
-      {
-        facingMode: {
-          ideal: "environment"
-        }
-      },
-
-      {
-
-        fps: 10,
-
-        qrbox: function(
-          viewfinderWidth,
-          viewfinderHeight
-        ) {
-
-          const size =
-            Math.min(
-              viewfinderWidth,
-              viewfinderHeight,
-              280
-            );
-
-          return {
-            width: size,
-            height: size
-          };
-
-        },
-
-        aspectRatio: 1.0
-
-      },
-
-      onScanSuccess,
-
-      onScanFailure
-
-    );
-
-
-    // ----------------------------------------------
-    // 起動成功
-    // ----------------------------------------------
-
-    scanning = true;
-
-    startButton.style.display =
-      "none";
-
-
-    showStatus(
-      "",
-      "📷 QRコードをカメラに映してください<br>" +
-      "<span class='small'>読み取ると自動的に受付処理します</span>"
-    );
-
-
-  } catch (error) {
-
-
-    console.error(
-      "カメラ起動エラー:",
-      error
-    );
-
-
-    scanning = false;
-
-    processing = false;
-
-
-    startButton.disabled = false;
-
-    startButton.style.display =
-      "block";
-
-
-    let message =
-      "❌ カメラを起動できませんでした";
-
-
-    // ----------------------------------------------
-    // エラー内容をわかりやすくする
-    // ----------------------------------------------
-
-    if (
-      error &&
-      (
-        String(error).includes(
-          "NotAllowedError"
-        ) ||
-        String(error).includes(
-          "Permission"
-        )
-      )
-    ) {
-
-      message =
-        "❌ カメラの使用が許可されていません<br><br>" +
-        "<span class='small'>" +
-        "ブラウザのカメラ許可を確認してください。" +
-        "</span>";
-
-    }
-
-
-    showStatus(
-      "error",
-      message
-    );
-
-  }
-
-}
-
-
-// ==================================================
-// QR読み取り成功
-// ==================================================
-
-function onScanSuccess(
-  decodedText,
-  decodedResult
-) {
-
-
-  const now =
-    Date.now();
-
-
-  // ----------------------------------------------
-  // 処理中なら無視
-  // ----------------------------------------------
-
-  if (processing) {
-
-    return;
-
-  }
-
-
-  // ----------------------------------------------
-  // 同じQRの連続読み取り防止
-  // ----------------------------------------------
-
-  if (
-
-    decodedText === lastText &&
-
-    now - lastScanTime <
-      DUPLICATE_WAIT
-
-  ) {
-
-    return;
-
-  }
-
-
-  lastText =
-    decodedText;
-
-
-  lastScanTime =
-    now;
-
-
-  // ----------------------------------------------
-  // チケットID取得
-  // ----------------------------------------------
-
-  const ticketId =
-    extractTicketId(
-      decodedText
-    );
-
-
-  // ----------------------------------------------
-  // 不正なQR
-  // ----------------------------------------------
-
-  if (!ticketId) {
-
-    showStatus(
-
-      "error",
-
-      "<div class='status-title'>" +
-      "❌ 無効なQRコード" +
-      "</div>" +
-
-      "<span class='small'>" +
-      "平野メディカルラリーのチケットではありません" +
-      "</span>"
-
-    );
-
-
-    return;
-
-  }
-
-
-  // ----------------------------------------------
-  // 処理開始
-  // ----------------------------------------------
-
-  processing = true;
-
-
-  showStatus(
-
-    "info",
-
-    "<div class='status-title'>" +
-    "🔍 確認中…" +
-    "</div>" +
-
-    "<div class='ticket-id'>" +
-    escapeHtml(ticketId) +
-    "</div>"
-
-  );
-
-
-  // ----------------------------------------------
-  // 親画面へ送信
-  // ----------------------------------------------
-
-  sendToParent({
-
-    type: "qr",
-
-    text: decodedText,
-
-    ticketId: ticketId
-
-  });
-
-
-}
-
-
-// ==================================================
-// 親画面へ送信
-// ==================================================
-
-function sendToParent(
-  data
-) {
-
-
-  if (
-
-    !window.opener ||
-
-    window.opener.closed
-
-  ) {
-
-
-    processing = false;
-
-
-    showStatus(
-
-      "error",
-
-      "<div class='status-title'>" +
-      "❌ 受付画面との接続がありません" +
-      "</div>" +
-
-      "<span class='small'>" +
-      "受付画面からカメラを起動してください。" +
-      "</span>"
-
-    );
-
-
-    return;
-
-  }
-
-
-  try {
-
-
-    const targetOrigin =
-      getParentOrigin();
-
-
-    window.opener.postMessage(
-
-      data,
-
-      targetOrigin
-
-    );
-
-
-  } catch (error) {
-
-
-    console.error(
-      "postMessage error:",
-      error
-    );
-
-
-    processing = false;
-
-
-    showStatus(
-
-      "error",
-
-      "❌ 受付画面への送信に失敗しました"
-
-    );
-
-  }
-
-}
-
-
-// ==================================================
-// QR読み取り失敗
-// ==================================================
-
-function onScanFailure(
-  errorMessage
-) {
-
-  // QRが映っていないときにも
-  // この関数は頻繁に呼ばれるため、
-  // 画面には表示しない。
-
-}
-
-
-// ==================================================
-// チケットID抽出
-// ==================================================
-
-function extractTicketId(
-  text
-) {
-
-
-  text =
-    String(
-      text || ""
-    ).trim();
-
-
-  // ----------------------------------------------
-  // HMR-0001形式
-  // ----------------------------------------------
-
-  const direct =
-    text.match(
-      /HMR-\d{4}/i
-    );
-
-
-  if (direct) {
-
-    return direct[0]
-      .toUpperCase();
-
-  }
-
-
-  // ----------------------------------------------
-  // URL形式
-  // ----------------------------------------------
-
-  try {
-
-
-    const url =
-      new URL(text);
-
-
-    const id =
-      url.searchParams.get(
-        "id"
-      );
-
-
-    if (id) {
-
-      const normalized =
-        id.trim().toUpperCase();
-
-
-      if (
-        /^HMR-\d{4}$/.test(
-          normalized
-        )
-      ) {
-
-        return normalized;
-
-      }
-
-    }
-
-
-  } catch (error) {
-
-    // URLではない
-
-  }
-
-
-  return "";
-
-}
-
-
-// ==================================================
-// 親画面から受付結果を受信
-// ==================================================
-
-window.addEventListener(
-
-  "message",
-
-  function(event) {
-
-
-    // ----------------------------------------------
-    // データ確認
-    // ----------------------------------------------
-
-    if (
-      !event.data
-    ) {
-
-      return;
-
-    }
-
-
-    // ----------------------------------------------
-    // メッセージ種類確認
-    // ----------------------------------------------
-
-    if (
-
-      event.data.type !==
-      "checkinResult"
-
-    ) {
-
-      return;
-
-    }
-
-
-    // ----------------------------------------------
-    // 親origin確認
-    // ----------------------------------------------
-
-    const expectedOrigin =
-      getParentOrigin();
-
-
-    if (
-
-      expectedOrigin !== "*" &&
-
-      event.origin !==
-        expectedOrigin
-
-    ) {
-
-      console.warn(
-        "不正なoriginからのmessage:",
-        event.origin
-      );
-
-      return;
-
-    }
-
-
-    const result =
-      event.data.result;
-
-
-    if (!result) {
-
-      processing = false;
-
-      return;
-
-    }
-
-
-    // ----------------------------------------------
-    // 入場成功
-    // ----------------------------------------------
-
-    if (
-      result.success
-    ) {
-
-
-      showStatus(
-
-        "success",
-
-        "<div class='status-title'>" +
-        "✅ 入場受付完了！" +
-        "</div>" +
-
-        "<div class='person-name'>" +
-        escapeHtml(
-          result.name
-        ) +
-        "</div>" +
-
-        "<div class='ticket-id'>" +
-        escapeHtml(
-          result.ticketId
-        ) +
-        "</div>" +
-
-        "<div>" +
-        escapeHtml(
-          result.entryTime
-        ) +
-        "</div>"
-
-      );
-
-
-      // バイブレーション
-
-      vibrateSuccess();
-
-
-      // --------------------------------------------
-      // 次のQRを読めるようにする
-      // --------------------------------------------
-
-      setTimeout(
-
-        function() {
-
-          processing = false;
-
-
-          showStatus(
-
-            "",
-
-            "📷 次のQRコードを読み取ってください"
-
-          );
-
-        },
-
-        1800
-
-      );
-
-
-      return;
-
-    }
-
-
-    // ----------------------------------------------
-    // 二重入場
-    // ----------------------------------------------
-
-    if (
-      result.alreadyCheckedIn
-    ) {
-
-
-      showStatus(
-
-        "warning",
-
-        "<div class='status-title'>" +
-        "⚠️ すでに入場済み" +
-        "</div>" +
-
-        "<div class='person-name'>" +
-        escapeHtml(
-          result.name
-        ) +
-        "</div>" +
-
-        "<div>" +
-        "入場日時：" +
-        escapeHtml(
-          result.entryTime
-        ) +
-        "</div>"
-
-      );
-
-
-      vibrateError();
-
-
-      setTimeout(
-
-        function() {
-
-          processing = false;
-
-
-          showStatus(
-
-            "",
-
-            "📷 次のQRコードを読み取ってください"
-
-          );
-
-        },
-
-        2200
-
-      );
-
-
-      return;
-
-    }
-
-
-    // ----------------------------------------------
-    // チケット未登録
-    // ----------------------------------------------
-
-    if (
-      result.notFound
-    ) {
-
-
-      showStatus(
-
-        "error",
-
-        "<div class='status-title'>" +
-        "❌ 未登録チケット" +
-        "</div>" +
-
-        "<span class='small'>" +
-        "このチケットは登録されていません。" +
-        "</span>"
-
-      );
-
-
-      vibrateError();
-
-
-      setTimeout(
-
-        function() {
-
-          processing = false;
-
-
-          showStatus(
-
-            "",
-
-            "📷 次のQRコードを読み取ってください"
-
-          );
-
-        },
-
-        2200
-
-      );
-
-
-      return;
-
-    }
-
-
-    // ----------------------------------------------
-    // その他のエラー
-    // ----------------------------------------------
-
-    showStatus(
-
-      "error",
-
-      "<div class='status-title'>" +
-      "❌ 入場処理エラー" +
-      "</div>" +
-
-      "<span class='small'>" +
-      "もう一度QRコードを読み取ってください。" +
-      "</span>"
-
-    );
-
-
-    vibrateError();
-
-
-    setTimeout(
-
-      function() {
-
-        processing = false;
-
-
-        showStatus(
-
-          "",
-
-          "📷 次のQRコードを読み取ってください"
-
-        );
-
-      },
-
-      2200
-
-    );
-
-  }
-
-);
-
-
-// ==================================================
-// 成功バイブレーション
-// ==================================================
-
-function vibrateSuccess() {
-
-
-  if (
-    navigator.vibrate
-  ) {
-
-    navigator.vibrate(
-      [150, 80, 150]
-    );
-
-  }
-
-}
-
-
-// ==================================================
-// エラーバイブレーション
-// ==================================================
-
-function vibrateError() {
-
-
-  if (
-    navigator.vibrate
-  ) {
-
-    navigator.vibrate(
-      [500]
-    );
-
-  }
-
-}
-
-
-// ==================================================
-// ステータス表示
-// ==================================================
-
-function showStatus(
-  className,
-  html
-) {
-
-
-  status.className =
-    className || "";
-
-
-  status.innerHTML =
-    html;
-
-}
-
-
-// ==================================================
-// HTMLエスケープ
-// ==================================================
-
-function escapeHtml(
-  text
-) {
-
-
-  return String(
-    text || ""
-  )
-
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-
-    .replace(
-      /</g,
-      "&lt;"
-    )
-
-    .replace(
-      />/g,
-      "&gt;"
-    )
-
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-
-    .replace(
-      /'/g,
-      "&#039;"
-    );
-
-}
-
-
-// ==================================================
-// ページを離れるときカメラ停止
-// ==================================================
-
-window.addEventListener(
-
-  "beforeunload",
-
-  async function() {
-
-
-    if (
-      scanner &&
-      scanning
-    ) {
-
-      try {
-
-        await scanner.stop();
-
-      } catch (error) {
-
-        console.warn(
-          "カメラ停止:",
-          error
-        );
-
-      }
-
-    }
-
-  }
-
-);
-
 
 </script>
 
