@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -461,6 +462,7 @@
   // 基本設定
   // =========================================================
 
+  const teamMode = new URLSearchParams(location.search).get("mode") === "team";
   let scanner = null;
 
   let scanning = false;
@@ -514,6 +516,11 @@
       // デバッグ情報を表示
       // -----------------------------------------------
 
+      if (teamMode) {
+        document.title = "平野メディカルラリー チームQR読み取り";
+        document.querySelector(".header p").textContent = "ステーション運営・チームQR読み取り";
+        document.querySelector(".footer").textContent = "第一回 平野メディカルラリー / ステーション運営";
+      }
       showDebugInfo();
 
 
@@ -1301,6 +1308,30 @@
     );
 
 
+
+    // チームQR専用モード。旧受付用の処理は一切変更しない。
+    if (teamMode) {
+      const raw = String(decodedText || "").trim();
+      const teamId = raw.startsWith("HMRTEAM|") ? raw.slice(8).trim() : raw;
+      if (!/^[A-Za-z0-9_-]{5,100}$/.test(teamId) || !raw.startsWith("HMRTEAM|")) {
+        setStatus("❌ チームQRではありません。", "error");
+        processing = false;
+        vibrateError();
+        return;
+      }
+      if (!window.opener || window.opener.closed) {
+        setStatus("❌ 運営画面からカメラを起動してください。", "error");
+        processing = false;
+        return;
+      }
+      window.opener.postMessage({type:"teamQr", text:raw, teamId:teamId}, "*");
+      setStatus("✅ チームQRを読み取りました。運営画面で確認してください。", "success");
+      vibrateSuccess();
+      // 連続読み取りを防止。次のチームは運営画面から再起動する。
+      try { if (scanner && scanner.isScanning) scanner.stop().catch(console.warn); } catch(e) {}
+      scanning = false;
+      return;
+    }
 
     // -----------------------------------------------
     // チケットID取得
