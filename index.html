@@ -462,7 +462,10 @@
   // 基本設定
   // =========================================================
 
-  const teamMode = new URLSearchParams(location.search).get("mode") === "team";
+  const teamMode = new URLSearchParams(location.search).get("mode") === "team"; 
+const staffMode =
+  new URLSearchParams(location.search).get("mode") === "staff";
+
   let scanner = null;
 
   let scanning = false;
@@ -521,7 +524,15 @@
         document.querySelector(".header p").textContent = "ステーション運営・チームQR読み取り";
         document.querySelector(".footer").textContent = "第一回 平野メディカルラリー / ステーション運営";
       }
-      showDebugInfo();
+      
+if (staffMode) {
+  document.title = "平野メディカルラリー スタッフ証読み取り";
+  document.querySelector(".header p").textContent =
+    "スタッフログイン・QRコード読み取り";
+  document.querySelector(".footer").textContent =
+    "第一回 平野メディカルラリー / スタッフ認証";
+}
+showDebugInfo();
 
 
       // -----------------------------------------------
@@ -1308,6 +1319,59 @@
     );
 
 
+
+    // =============================================
+    // スタッフ証QR専用モード
+    // =============================================
+    if (staffMode) {
+      const staffId = String(decodedText || "").trim();
+
+      // スタッフ証のIDだけを受け付ける
+      if (!/^STAFF-[A-Za-z0-9-]+$/.test(staffId)) {
+        setStatus(
+          "❌ スタッフ証のQRコードではありません。",
+          "error"
+        );
+        processing = false;
+        vibrateError();
+        return;
+      }
+
+      if (!window.opener || window.opener.closed) {
+        setStatus(
+          "❌ スタッフログイン画面からカメラを起動してください。",
+          "error"
+        );
+        processing = false;
+        return;
+      }
+
+      // 認証情報は送らず、スタッフIDだけを返す
+      window.opener.postMessage(
+        {
+          type: "staffQr",
+          staffId: staffId
+        },
+        "*"
+      );
+
+      setStatus(
+        "✅ スタッフ証を読み取りました。\n" +
+        "ログイン画面でパスワードを入力してください。",
+        "success"
+      );
+
+      vibrateSuccess();
+
+      try {
+        if (scanner && scanner.isScanning) {
+          scanner.stop().catch(console.warn);
+        }
+      } catch (e) {}
+
+      scanning = false;
+      return;
+    }
 
     // チームQR専用モード。旧受付用の処理は一切変更しない。
     if (teamMode) {
