@@ -1396,7 +1396,40 @@ showDebugInfo();
       scanning = false;
       return;
     }
+// =============================================
+// 共通招待QR専用処理
+// =============================================
+const invitationCode = String(decodedText || "").trim();
 
+if (/^HMR-INV-[0-9a-f]{64}$/i.test(invitationCode)) {
+
+  if (!window.opener || window.opener.closed) {
+    setStatus(
+      "❌ 受付画面からカメラを起動してください。",
+      "error"
+    );
+    processing = false;
+    return;
+  }
+
+  window.opener.postMessage(
+    {
+      type: "qrResult",
+      value: invitationCode
+    },
+    window.opener.location.origin
+  );
+
+  setStatus(
+    "✅ 共通招待QRを読み取りました。\n受付画面で確認してください。",
+    "success"
+  );
+
+  vibrateSuccess();
+
+  processing = false;
+  return;
+}
     // -----------------------------------------------
     // チケットID取得
     // -----------------------------------------------
