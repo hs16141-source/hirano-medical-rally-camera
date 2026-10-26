@@ -1417,7 +1417,7 @@ if (/^HMR-INV-[0-9a-f]{64}$/i.test(invitationCode)) {
       type: "qrResult",
       value: invitationCode
     },
-    window.opener.location.origin
+    "*"
   );
 
   setStatus(
